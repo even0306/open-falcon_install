@@ -1,0 +1,24 @@
+FROM python:2.7-alpine3.7
+USER root
+ENV prefix=/open-falcon
+ENV workdir=$prefix/dashboard
+
+ENV PYTHONPATH="${PYTHONPATH}:/usr/lib/python2.7/site-packages/"
+WORKDIR $workdir
+RUN apk add --no-cache \
+    ca-certificates bash git g++ perl make \
+    py-mysqldb \
+    py-pyldap && \
+    mkdir -p $prefix && \
+    pip install \
+    Flask==0.10.1 \
+    Flask-Babel==0.9 \
+    Jinja2==2.7.2 \
+    Werkzeug==0.9.4 \
+    gunicorn==19.9.0 \
+    python-dateutil==2.2 \
+    requests==2.3.0 && \
+    git clone https://github.com/open-falcon/dashboard.git . 
+
+ENTRYPOINT ["/bin/sh", "-c"]
+

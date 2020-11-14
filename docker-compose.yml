@@ -1,0 +1,60 @@
+version: "3.8"
+services:
+  openfalcon:
+    build:
+      context: .
+      dockerfile: Dockerfile-openfalcon
+    external_links:
+      - mysql
+      - redis
+    environment:
+      - MYSQL_PORT=root:123456@tcp\(mysql:3306\)
+      - REDIS_PORT=redis:6379
+    ports:
+      - 6030:6030
+      - 8433:8433
+    logging:
+      driver: json-file
+      options:
+        max-size: "200k"
+        max-file: "10"
+    restart: always
+    networks:
+      - even_docker_networks
+
+  falcondashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile-falcondashboard
+    external_links:
+      - mysql
+      - openfalcon
+    environment:
+      - API_ADDR=http://openfalcon:8080/api/v1
+      - PORTAL_DB_HOST=mysql
+      - PORTAL_DB_PORT=3306
+      - PORTAL_DB_USER=root
+      - PORTAL_DB_PASS=123456
+      - PORTAL_DB_NAME=falcon_portal
+      - ALARM_DB_HOST=mysql
+      - ALARM_DB_PORT=3306
+      - ALARM_DB_USER=root
+      - ALARM_DB_PASS=123456
+      - ALARM_DB_NAME=alarms
+    working_dir: /open-falcon/dashboard
+    command: ["./control startfg"]
+    logging:
+      driver: json-file
+      options:
+        max-size: "200k"
+        max-file: "10"
+    restart: always
+    networks:
+      - even_docker_networks
+
+networks:
+  even_docker_networks:
+    external: true
+    ipam:
+      config:
+        - subnet: 172.27.0.0/16
