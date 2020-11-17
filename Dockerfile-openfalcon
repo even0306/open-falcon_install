@@ -38,9 +38,6 @@ RUN mkdir -p $FALCON_DIR/logs && \
 COPY ./supervisord.conf /etc/supervisord.conf
 COPY --from=builder ${FALCON_DIR} ${FALCON_DIR}
 COPY ./mailconfig/cfg.json /falcon-mail-provider/
-COPY ./alarmconfig/cfg.json /open-falcon/alarm/config/
-COPY ./apiconfig/cfg.json /open-falcon/api/config/
-COPY ./agentconfig/cfg.json /open-falcon/agent/config/
 COPY ./mailstart.sh /open-falcon/
 COPY --from=builder /go/src/github.com/open-falcon/mail-provider/control /falcon-mail-provider/
 COPY --from=builder /go/src/github.com/open-falcon/mail-provider/falcon-mail-provider /falcon-mail-provider/
