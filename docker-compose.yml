@@ -4,23 +4,16 @@ services:
     build:
       context: .
       dockerfile: Dockerfile-openfalcon
-    external_links:
-      - mysql
-      - redis
     environment:
-      - MYSQL_PORT=root:123456@tcp\(mysql:3306\)
-      - REDIS_PORT=redis:6379
-    ports:
-      - 6030:6030
-      - 8433:8433
+      - MYSQL_PORT=root:123456@tcp\(127.0.0.1:3306\)
+      - REDIS_PORT=127.0.0.1:6379
     logging:
       driver: json-file
       options:
         max-size: "200k"
         max-file: "10"
     restart: always
-    networks:
-      - even_docker_networks
+    network_mode: host
 
   falcondashboard:
     build:
@@ -28,9 +21,8 @@ services:
       dockerfile: Dockerfile-falcondashboard
     external_links:
       - mysql
-      - openfalcon
     environment:
-      - API_ADDR=http://openfalcon:8080/api/v1
+      - API_ADDR=http://【本机ip】:8080/api/v1
       - PORTAL_DB_HOST=mysql
       - PORTAL_DB_PORT=3306
       - PORTAL_DB_USER=root
