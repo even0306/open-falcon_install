@@ -20,3 +20,4 @@ docker-compose up -d
 3. 前端容器默认未开放8081端口，我使用了docker版nginx直接链接了open-falcon容器，反向代理了8081端口。如不实用反向代理，请修改docker-compose文件，映射出8081端口。
 4. 监控多台机器主要在机器上启动agent服务，修改agent配置文件，位置在 ./agent/config/cfg.json ，将transfer和heartbeat模块的地址改成管理机地址。
 5. 要注意，默认开放注册功能，所有人均可注册，用户配置完成后需要关闭注册功能。修改 ./api/config/cfg.json 文件，将 signup_disable 改成 true，重启服务即可关闭注册。
+6. 默认安装邮件网关，配置后即可使用。
