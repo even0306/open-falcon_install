@@ -9,7 +9,13 @@ RUN mkdir -p $FALCON_DIR && \
     mkdir -p $FALCON_DIR/logs && \
     apk add --no-cache ca-certificates bash git supervisor && \
     git clone https://github.com/open-falcon/falcon-plus.git ${PROJ_PATH} && \
-    cp ${PROJ_PATH}/docker/supervisord.conf ${FALCON_DIR}
+    cd $GOPATH/src && \
+    mkdir github.com/open-falcon/ -p && \
+    cd github.com/open-falcon/ && \
+    git clone https://github.com/open-falcon/mail-provider.git && \
+    cd mail-provider && \
+    go get ./... && \
+    ./control build
 
 WORKDIR ${PROJ_PATH}
 RUN make all \
@@ -25,14 +31,21 @@ USER root
 ENV FALCON_DIR=/open-falcon
 
 RUN mkdir -p $FALCON_DIR/logs && \
-    apk add --no-cache ca-certificates bash git supervisor
+    apk add --no-cache ca-certificates bash git supervisor tzdata curl iproute2 && \
+    cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
+    apk del tzdata
 
-COPY --from=builder ${FALCON_DIR}/supervisord.conf /etc/supervisord.conf
-
+COPY ./supervisord.conf /etc/supervisord.conf
 COPY --from=builder ${FALCON_DIR} ${FALCON_DIR}
+COPY ./mailconfig/cfg.json /falcon-mail-provider/
+COPY ./alarmconfig/cfg.json /open-falcon/alarm/config/
+COPY ./apiconfig/cfg.json /open-falcon/api/config/
+COPY ./agentconfig/cfg.json /open-falcon/agent/config/
+COPY ./mailstart.sh /open-falcon/
+COPY --from=builder /go/src/github.com/open-falcon/mail-provider/control /falcon-mail-provider/
+COPY --from=builder /go/src/github.com/open-falcon/mail-provider/falcon-mail-provider /falcon-mail-provider/
 
-EXPOSE 8433 8080
+EXPOSE 8433 8080 4000
 WORKDIR ${FALCON_DIR}
 
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
-
