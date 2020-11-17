@@ -1,0 +1,16 @@
+{
+        "debug": true,
+        "http": {
+                "listen": "0.0.0.0:4000",
+                "token": ""
+        },
+        "smtp": {
+                "addr": "smtp服务器地址",
+                "username": "邮箱",
+                "password": "密码",
+                "from": "邮箱",
+                "tls":true,
+                "anonymous":false,
+                "skipVerify":true
+        }
+}
