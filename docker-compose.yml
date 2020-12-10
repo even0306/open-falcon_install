@@ -41,12 +41,4 @@ services:
         max-size: "200k"
         max-file: "10"
     restart: always
-    networks:
-      - even_docker_networks
-
-networks:
-  even_docker_networks:
-    external: true
-    ipam:
-      config:
-        - subnet: 172.27.0.0/16
+    network_mode: bridge
