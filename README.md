@@ -16,8 +16,7 @@ docker-compose up -d
 
 # 安装完成后可做的几件事
 1. 初始帐号注册好后，修改openfalcon容器 ./api/config/cfg.json 文件，将 signup_disable 改成 true，重启服务可关闭注册功能。
-2. 修改openfalcon容器 ./api/config/cfg.json 文件，将 signup_disable 改成 true，重启服务可关闭注册功能。
-3. 修改openfalcon容器 ./agent/config/cfg.json 文件，填写 hostname 字段，主机会以该名称在页面显示。
+2. 修改openfalcon容器 ./agent/config/cfg.json 文件，填写 hostname 字段，主机会以该名称在页面显示。
 
 # 几点说明
 1. Dockerfile使用github最新官方源码编译。
